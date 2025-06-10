@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>商品浏览与搜索</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(to right, #ff7e5f, #feb47b); /* 漸變背景 */
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    .header {
+      text-align: center;
+      padding: 30px;
+      background-color: #333;
+      color: white;
+      font-size: 32px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .search-bar {
+      display: flex;
+      justify-content: center;
+      margin: 20px;
+      position: relative;
+    }
+
+    .search-bar input {
+      width: 60%;
+      padding: 14px;
+      font-size: 16px;
+      border: none;
+      border-radius: 30px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .search-bar button {
+      position: absolute;
+      right: -10px;
+      top: 0;
+      background-color: #ff6f61;
+      border: none;
+      color: white;
+      font-size: 16px;
+      padding: 12px 18px;
+      border-radius: 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .search-bar input:focus {
+      outline: none;
+      border-color: #ff6f61;
+    }
+
+    .product-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 30px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    .product {
+      background-color: #fff;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease-in-out;
+      overflow: hidden;
+      position: relative;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .product:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .product img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 10px;
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .product img:hover {
+      transform: scale(1.1); /* 图片放大效果 */
+    }
+
+    .product-info {
+      padding: 10px 0;
+    }
+
+    .product h3 {
+      font-size: 20px;
+      color: #333;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .product .description {
+      font-size: 14px;
+      color: #777;
+      height: 40px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .product .price {
+      font-size: 22px;
+      color: #e74c3c;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .product .rating {
+      margin-top: 10px;
+      font-size: 16px;
+      color: #f39c12;
+    }
+
+    .add-to-cart {
+      position: absolute;
+      bottom: 15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #ff6f61;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 30px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .product:hover .add-to-cart {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    @media (max-width: 768px) {
+      .search-bar input {
+        width: 80%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>商品浏览与搜索</h1>
+</div>
+
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="搜索商品...">
+  <button onclick="searchProduct()">搜索</button>
+</div>
+
+<div class="product-list" id="productList">
+  <!-- 商品项会动态插入到这里 -->
+</div>
+
+<script>
+  // 商品数据（模拟）
+  const products = [
+    { name: "手机", price: "¥2999", img: "https://via.placeholder.com/300x200?text=手机", description: "最新款智能手机，支持5G网络，超高性能处理器。" },
+    { name: "笔记本电脑", price: "¥5999", img: "https://via.placeholder.com/300x200?text=笔记本", description: "高性能笔记本电脑，适合游戏和设计工作。" },
+    { name: "耳机", price: "¥199", img: "https://via.placeholder.com/300x200?text=耳机", description: "无线蓝牙耳机，长时间佩戴不累耳。" },
+    { name: "电视", price: "¥4999", img: "https://via.placeholder.com/300x200?text=电视", description: "智能4K电视，带HDR支持，超清画质。" },
+    { name: "相机", price: "¥3499", img: "https://via.placeholder.com/300x200?text=相机", description: "高画质单反相机，适合摄影爱好者和专业人士。" },
+    { name: "游戏机", price: "¥2299", img: "https://via.placeholder.com/300x200?text=游戏机", description: "最新款游戏主机，支持4K游戏和流媒体。" },
+    { name: "智能手表", price: "¥799", img: "https://via.placeholder.com/300x200?text=智能手表", description: "智能手表，支持健康监测、运动追踪。" },
+    { name: "空气净化器", price: "¥1299", img: "https://via.placeholder.com/300x200?text=空气净化器", description: "空气净化器，适合家庭和办公室使用。" },
+    { name: "平板电脑", price: "¥2299", img: "https://via.placeholder.com/300x200?text=平板电脑", description: "高分辨率显示，适合电子书阅读和绘图。" },
+    { name: "电动牙刷", price: "¥199", img: "https://via.placeholder.com/300x200?text=电动牙刷", description: "智能电动牙刷，拥有多种清洁模式。" }
+  ];
+
+  // 展示商品
+  function displayProducts(filteredProducts) {
+    const productList = document.getElementById('productList');
+    productList.innerHTML = '';  // 清空现有商品
+    filteredProducts.forEach(product => {
+      const productElement = document.createElement('div');
+      productElement.classList.add('product');
+      productElement.innerHTML = `
+        <img src="${product.img}" alt="${product.name}">
+        <div class="product-info">
+          <h3>${product.name}</h3>
+          <p class="description">${product.description}</p>
+          <div class="price">${product.price}</div>
+          <div class="rating">⭐⭐⭐⭐☆</div>
+        </div>
+        <button class="add-to-cart">加入购物车</button>
+      `;
+      productList.appendChild(productElement);
+    });
+  }
+
+  // 搜索商品
+  function searchProduct() {
+    const searchInput = document.getElementById('searchInput').value.toLowerCase();
+    const filteredProducts = products.filter(product => product.name.toLowerCase().includes(searchInput));
+    displayProducts(filteredProducts);
+  }
+
+  // 初始化展示所有商品
+  displayProducts(products);
+</script>
+
+</body>
+</html>
