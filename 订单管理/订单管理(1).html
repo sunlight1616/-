@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>订单管理系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+<div class="max-w-7xl mx-auto bg-white p-6 rounded-xl shadow-md">
+    <!-- 页面标题 -->
+    <h1 class="text-2xl font-bold mb-6">订单管理系统</h1>
+
+    <!-- 搜索与筛选 -->
+    <div class="flex flex-wrap gap-4 mb-6">
+        <input type="text" placeholder="订单编号" class="px-4 py-2 border rounded-md w-48" />
+        <input type="text" placeholder="用户名 / 手机号" class="px-4 py-2 border rounded-md w-48" />
+        <select class="px-4 py-2 border rounded-md w-48">
+            <option>全部状态</option>
+            <option>待付款</option>
+            <option>已付款</option>
+            <option>已发货</option>
+            <option>已完成</option>
+            <option>已取消</option>
+        </select>
+        <input type="date" class="px-4 py-2 border rounded-md" />
+        <input type="date" class="px-4 py-2 border rounded-md" />
+        <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">搜索</button>
+    </div>
+
+    <!-- 订单列表 -->
+    <div class="overflow-x-auto">
+        <table class="min-w-full text-sm text-left border">
+            <thead class="bg-gray-100 text-gray-700">
+            <tr>
+                <th class="p-3 border">订单编号</th>
+                <th class="p-3 border">用户姓名</th>
+                <th class="p-3 border">下单时间</th>
+                <th class="p-3 border">商品信息</th>
+                <th class="p-3 border">总金额</th>
+                <th class="p-3 border">订单状态</th>
+                <th class="p-3 border">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- 示例订单 -->
+            <tr class="hover:bg-gray-50">
+                <td class="p-3 border">ORD123456</td>
+                <td class="p-3 border">张三</td>
+                <td class="p-3 border">2025-06-12</td>
+                <td class="p-3 border">商品A x1, 商品B x2</td>
+                <td class="p-3 border">¥299.00</td>
+                <td class="p-3 border text-green-600">已发货</td>
+                <td class="p-3 border">
+                    <button onclick="openModal()" class="text-blue-600 hover:underline">查看</button>
+                    <button class="text-red-500 ml-3 hover:underline">删除</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- 分页 -->
+    <div class="mt-6 flex justify-end space-x-2">
+        <button class="px-3 py-1 border rounded hover:bg-gray-100">上一页</button>
+        <button class="px-3 py-1 border rounded bg-blue-600 text-white">1</button>
+        <button class="px-3 py-1 border rounded hover:bg-gray-100">2</button>
+        <button class="px-3 py-1 border rounded hover:bg-gray-100">下一页</button>
+    </div>
+</div>
+
+<!-- 订单详情模态框 -->
+<div id="modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white p-6 rounded-lg w-1/2 shadow-lg">
+        <h2 class="text-xl font-bold mb-4">订单详情</h2>
+        <p><strong>收货地址：</strong> 北京市朝阳区XX路88号</p>
+        <p><strong>发货时间：</strong> 2025-06-10</p>
+        <p><strong>物流单号：</strong> SF1234567890</p>
+        <p><strong>用户留言：</strong> 请尽快发货，谢谢！</p>
+        <button onclick="closeModal()" class="mt-4 bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">关闭</button>
+    </div>
+</div>
+
+<script>
+    function openModal() {
+      document.getElementById('modal').classList.remove('hidden');
+    }
+    function closeModal() {
+      document.getElementById('modal').classList.add('hidden');
+    }
+</script>
+</body>
+</html>
